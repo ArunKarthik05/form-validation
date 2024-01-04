@@ -1,0 +1,124 @@
+html {
+  /* background-color: black; */
+  color: black;
+  font-size: 10px;
+}
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  font-size: 1.5rem;
+}
+/* body::before {
+  content: "";
+  background-image: url("assets/images/bg.png");
+  background-size: cover;
+  background-position: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.8;
+  z-index: -1;
+} */
+.left {
+  font-size: 2rem;
+  font-weight: 600;
+}
+nav {
+  /* background-color: lightblue; */
+  min-width: 90%;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  justify-content: center;
+  gap: 5rem;
+}
+.search {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  margin-left: 3rem;
+  /* background-color: red; */
+}
+#searchInput {
+  background-color: rgb(223, 215, 215);
+  height: 3rem;
+  width: 100%;
+  border: none;
+  border-radius: 1rem 1rem 1rem 1rem;
+}
+nav button {
+  background-color: transparent;
+  border: none;
+}
+nav i {
+  font-size: 2rem;
+  color: rgb(223, 215, 215);
+  cursor: pointer;
+  transform: all 0.3s ease-in-out;
+}
+.fas:hover {
+  color: black;
+}
+.form-container {
+  position: relative;
+  z-index: 1 !important;
+  background-color: black !important;
+  color: white;
+  padding: 2%;
+  margin-left: 35%;
+  border-radius: 1rem;
+  max-width: fit-content;
+  background-color: rgb(46, 42, 42);
+  min-height: fit-content;
+}
+.form-inner-container {
+  /* background-color: blue; */
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+
+  padding: 2rem;
+}
+.form-inner-container div {
+  margin-bottom: 2rem;
+  margin-left: 10%;
+}
+form input {
+  padding: 0.5rem;
+  text-align: left;
+}
+input:focus {
+  outline: none;
+}
+.submit {
+  width: fit-content;
+  display: block;
+  background-color: white;
+  color: black;
+  border: none;
+  border-radius: 1rem;
+  margin-left: 30%;
+  padding: 1rem;
+  transition: all 0.5s ease-in-out;
+}
+.submit:hover {
+  background-color: black;
+  color: white;
+}
+.invalid {
+  border: 2px solid #ff0000;
+}
+.error-message {
+  color: #ff0000;
+}
+.heading-user {
+  color: red;
+  font-weight: 600;
+  text-align: center;
+}
