@@ -5,6 +5,7 @@ var age = 0;
 var fileName = "";
 var fileSize = "";
 var fileExtension = ".any";
+var convertedImage = "";
 
 document.addEventListener("keydown", function (event) {
   if (event.key === "Enter") {
@@ -34,6 +35,7 @@ function storeFormValues() {
         .substring(fileName.lastIndexOf("."))
         .toLowerCase(),
     },
+    convertedImage,
   };
   userDetails.push(formValues);
   localStorage.setItem("userDetails", JSON.stringify(userDetails));
@@ -183,6 +185,12 @@ function fileValidate() {
     return false;
   }
 
+  var reader = new FileReader();
+  reader.onload = function (e) {
+    convertedImage = e.target.result;
+  };
+  reader.readAsDataURL(fileInput.files[0]);
+
   fileName = fileInput.files[0].name;
   fileSize = fileInput.files[0].size / (1024 * 1024); // Size in MB
   fileSize = fileSize.toFixed(2);
@@ -217,7 +225,7 @@ function handleSearch() {
   var searchInput = document.getElementById("searchInput").value.trim();
   if (/[a-zA-Z]/.test(searchInput)) {
     handleUserSearch(searchInput);
-  } else if (/^(?:[0-2]|2)$/.test(searchInput)) {
+  } else if (/^([01](\.\d{1,2})?|2(\.00)?)$/.test(searchInput)) {
     handleFileSearch(searchInput);
   } else if (/^(?:[1-9]\d{2,}|[4-9]\d{1,})$/.test(searchInput)) {
     handleAgeSearch(searchInput);
@@ -232,7 +240,7 @@ function handleUserSearch(searchInput) {
     var userData = JSON.parse(storedData);
     // Step 5: Find the matching username
     var foundUser = userData.find((user) => user.username === searchInput);
-    console.log(foundUser);
+    //console.log(foundUser);
     if (foundUser) {
       document.getElementById("searchForm").style.display = "none";
       document.getElementById("icon").style.display = "none";
@@ -242,6 +250,9 @@ function handleUserSearch(searchInput) {
       userDetailsDiv.classList.add("user-details");
       userDetailsDiv.id = "data";
       userDetailsDiv.innerHTML = `
+        <div class="rounded">
+        <img class="profile-pic" src="${convertedImage}" alt="Profile-pic">
+        </div>
         <p><strong>Name:</strong> ${foundUser.name}</p>
         <p><strong>Username:</strong> ${foundUser.username}</p>
         <p><strong>Email:</strong> ${foundUser.email}</p>
@@ -297,7 +308,7 @@ function handleUserSearch(searchInput) {
 function handleFileSearch(searchInput) {
   searchInput = parseFloat(searchInput);
   var storedData = localStorage.getItem("userDetails");
-  console.log(storedData);
+  //console.log(storedData);
   if (storedData) {
     var userData = JSON.parse(storedData);
     var matchingUsers = userData.filter(function (user) {
@@ -320,7 +331,7 @@ function handleAgeSearch(searchInput) {
   searchInput = parseFloat(searchInput);
   searchInput /= 365;
   searchInput = Math.ceil(searchInput);
-  console.log(searchInput);
+  //console.log(searchInput);
   var storedData = localStorage.getItem("userDetails");
   //console.log(storedData);
   if (storedData) {
@@ -329,7 +340,7 @@ function handleAgeSearch(searchInput) {
       return user.age <= searchInput;
     });
     handleDisplayDetails(matchingUsers);
-    console.log(matchingUsers);
+    //console.log(matchingUsers);
   } else {
     alert("No users found within the given age");
   }
@@ -355,7 +366,7 @@ function handleBack() {
 }
 
 function handleDisplayDetails(matchingUsers) {
-  console.log("in");
+  //console.log("in");
   matchingUsers.forEach(function (foundUser, i) {
     document.getElementById("searchForm").style.display = "none";
     document.getElementById("icon").style.display = "none";
