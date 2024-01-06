@@ -1,5 +1,4 @@
 var form = document.getElementById("main-form");
-var submitButton = document.getElementById("submitButton");
 
 var age = 0;
 var fileName = "";
@@ -15,6 +14,7 @@ document.addEventListener("keydown", function (event) {
 
 function storeFormValues() {
   var userDetails = JSON.parse(localStorage.getItem("userDetails")) || [];
+  var userNameDetails = JSON.parse(localStorage.getItem("userNames")) || [];
 
   var formValues = {
     name: document.getElementById("name").value,
@@ -38,6 +38,9 @@ function storeFormValues() {
     convertedImage,
   };
   userDetails.push(formValues);
+  userNameDetails.push(document.getElementById("username").value);
+
+  localStorage.setItem("userNames", JSON.stringify(userNameDetails));
   localStorage.setItem("userDetails", JSON.stringify(userDetails));
 }
 form.addEventListener("submit", function (e) {
@@ -46,16 +49,53 @@ form.addEventListener("submit", function (e) {
   e.preventDefault();
   form.reset();
 });
+function validateUsername(input) {
+  var parentContainer = input.parentElement;
+  var submitButton = document.getElementById("submitButton");
+  var usernames = localStorage.getItem("userNames");
+  var errorSpan = parentContainer.querySelector(".error-message");
+  usernames = JSON.parse(usernames);
 
+  usernames.forEach(function (user) {
+    //console.log(user);
+    if (user === input.value) {
+      //console.log("invalid");
+      input.classList.add("invalid");
+      input.classList.remove("is-valid");
+      if (!errorSpan) {
+        errorSpan = document.createElement("span");
+        errorSpan.className = "error-message";
+        errorSpan.innerHTML = "*Invalid";
+        parentContainer.appendChild(errorSpan);
+      }
+      submitButton.style.display = "none";
+    } else {
+      //console.log("valid");
+      input.classList.add("is-valid");
+      input.classList.remove("invalid");
+      if (errorSpan) {
+        parentContainer.removeChild(errorSpan);
+      }
+    }
+  });
+  //console.log("out");
+
+  submitButton.style.display = "block";
+  if (input.value === "") {
+    input.classList.remove("is-valid");
+  }
+}
 function validateEmail(input) {
   var parentContainer = input.parentElement;
   var errorSpan = parentContainer.querySelector(".error-message");
+  var checkSpan = document.getElementById("tick");
   if (!input.value.match(/^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/)) {
     input.classList.add("invalid");
+    input.classList.remove("is-valid");
     if (!errorSpan) {
       errorSpan = document.createElement("span");
       errorSpan.className = "error-message";
-      errorSpan.innerHTML = "*Invalid";
+      errorSpan.innerHTML = "*Invalid mail id";
       parentContainer.appendChild(errorSpan);
     }
     submitButton.style.display = "none";
@@ -68,14 +108,17 @@ function validateEmail(input) {
   }
   submitButton.style.display = "block";
   input.classList.add("is-valid");
+
   return true;
 }
 
 function validatePhone(input) {
   var parentContainer = input.parentElement;
+  var checkSpan = document.getElementById("tick");
   var errorSpan = parentContainer.querySelector(".error-message");
   if (!/^[6-9]\d{9}$/.test(input.value)) {
     input.classList.add("invalid");
+    input.classList.remove("is-valid");
     if (!errorSpan) {
       errorSpan = document.createElement("span");
       errorSpan.className = "error-message";
@@ -83,6 +126,10 @@ function validatePhone(input) {
       parentContainer.appendChild(errorSpan);
     }
     submitButton.style.display = "none";
+    if (checkSpan) {
+      parentContainer.removeChild(checkSpan);
+    }
+    submitButton.style.backgroundColor = "lightgray";
     return false;
   } else {
     input.classList.remove("invalid");
@@ -91,6 +138,7 @@ function validatePhone(input) {
     }
   }
   submitButton.style.display = "block";
+  input.classList.add("is-valid");
   return true;
 }
 
@@ -101,6 +149,7 @@ function validateDOB(input) {
   var dobYear = new Date(input.value).getFullYear();
   if (dobYear < 1950 || dobYear > 2010) {
     input.classList.add("invalid");
+    input.classList.remove("is-valid");
     if (!errorSpan) {
       errorSpan = document.createElement("span");
       errorSpan.className = "error-message";
@@ -118,13 +167,7 @@ function validateDOB(input) {
   submitButton.style.display = "block";
   var currentDate = new Date();
   age = currentDate.getFullYear() - dobYear;
-  if (
-    currentDate.getMonth() < birthdate.getMonth() ||
-    (currentDate.getMonth() === birthdate.getMonth() &&
-      currentDate.getDate() < birthdate.getDate())
-  ) {
-    age--;
-  }
+  input.classList.add("is-valid");
   //console.log(age + " years");
   return true;
 }
@@ -149,6 +192,7 @@ function validatePassword(input) {
     }
   }
   submitButton.style.display = "block";
+  input.classList.add("is-valid");
   return true;
 }
 
@@ -172,6 +216,7 @@ function validatePan(input) {
     }
   }
   submitButton.style.display = "block";
+  input.classList.add("is-valid");
   return true;
 }
 
@@ -234,13 +279,13 @@ function handleSearch() {
 
 function handleUserSearch(searchInput) {
   var storedData = localStorage.getItem("userDetails");
-  console.log(storedData);
   if (storedData) {
     // Step 4: Parse JSON data
     var userData = JSON.parse(storedData);
     // Step 5: Find the matching username
     var foundUser = userData.find((user) => user.username === searchInput);
     //console.log(foundUser);
+    console.log();
     if (foundUser) {
       document.getElementById("searchForm").style.display = "none";
       document.getElementById("icon").style.display = "none";
@@ -251,7 +296,9 @@ function handleUserSearch(searchInput) {
       userDetailsDiv.id = "data";
       userDetailsDiv.innerHTML = `
         <div class="rounded">
-        <img class="profile-pic" src="${convertedImage}" alt="Profile-pic">
+        <img class="profile-pic" src="${
+          foundUser.convertedImage
+        }" alt="Profile-pic">
         </div>
         <p><strong>Name:</strong> ${foundUser.name}</p>
         <p><strong>Username:</strong> ${foundUser.username}</p>

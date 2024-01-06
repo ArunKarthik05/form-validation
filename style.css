@@ -73,7 +73,7 @@ nav i {
   padding: 2%;
   margin-left: 35%;
   border-radius: 1rem;
-  max-width: fit-content;
+  max-width: 30%;
   background-color: rgb(46, 42, 42);
   min-height: fit-content;
 }
@@ -111,8 +111,12 @@ input:focus {
   background-color: black;
   color: white;
 }
+
 .invalid {
   border: 2px solid #ff0000;
+}
+.is-valid {
+  border: 0.2rem solid rgb(94, 186, 94);
 }
 .error-message {
   color: #ff0000;
